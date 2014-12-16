@@ -1,3 +1,10 @@
+/**
+ * @file FPgrowth.hpp
+ * @brief implementing FP-growth algorithm
+ * @author sfchaos
+ * @date 2014/12/16
+ */
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -14,14 +21,25 @@
 
 using namespace std;
 
+/**
+ * @class FPgrowth
+ * @brief class for FP-growth algorithm
+ */
+
 class FPgrowth
 {
 public:
 	FPgrowth(unsigned int minsup) : minsup_(minsup), fpt_(new FPtree) {}
+
 	~FPgrowth() {
-	  //for_each(header_.begin(), header_.end(), [&](ItemCount const *pitem) { delete pitem; });
 	  delete fpt_;
 	}
+
+    /**
+     * @fn readTran(const string &fn)
+     * @brief read transactions from file
+     * @param[in] fn  a file containing transactions
+     */
 	void readTran(const string &fn) {
 		string line;
 		Transaction tran;
@@ -38,32 +56,29 @@ public:
 				if (!tran.find(item)) {
 					// if item is not in item header, add it
 cout << "item: " << item << endl;
-					//vector<ItemCount*>::iterator result = find_if(header_.begin(), header_.end(), pMatchItemCount(item));
-					//auto result = find_if(header_.begin(), header_.end(), [&](ItemCount *pitem){ return pitem->getItem() == item;});
 					auto result = std::find_if(header_.begin(), header_.end(), [&](shared_ptr<ItemCount> pitem){ return pitem->getItem() == item; });
 					shared_ptr<ItemCount> pitem = make_shared<ItemCount>(item);
 					if (result == header_.end()) {
 cout << "add item: " << item << endl;
-						//ItemCount *pitem = new ItemCount(item);
-						//shared_ptr<ItemCount> pitem = make_shared<ItemCount>(item);
 						header_.push_back(pitem);
 						tran.addItem(pitem);
 					} else {
-//cout << "increase count: " << item << endl;
 						(*result)->incCount();
 						tran.addItem(*result);
 					}
-					//tran.addItem(pitem);
 				}
 			}
 	        trandb_.addTransaction(tran);
 		}
 	}
 
+    /**
+     * @fn construct()
+     * @brief construct FP-tree
+     */
 	void construct() {
 		for_each(trandb_.begin(), trandb_.end(), [&](Transaction &tran) {
 			// sort items by descending frequency order
-			//sort(tran.begin(), tran.end());
 			tran.sort();
 			// delete items with frequency less than minimum support
 			tran.erase(minsup_);
@@ -76,9 +91,13 @@ cout << "add item: " << item << endl;
 	}
 
 private:
+	/**　@brief minimum support */
 	unsigned int minsup_;
+	/**　@brief transaction database */
 	TransactionDB trandb_;
 	//vector<ItemCount*> header_;
+	/**　@brief a vector of items with count */
 	vector<shared_ptr<ItemCount> > header_;
+	/**　@brief a pointer to the FP-tree */
 	FPtree *fpt_;
 };

@@ -1,3 +1,10 @@
+/**
+ * @file Item.hpp
+ * @brief implementing item
+ * @author sfchaos
+ * @date 2014/12/16
+ */
+
 #ifndef ITEM_HPP_
 #define ITEM_HPP_
 
@@ -7,12 +14,21 @@
 
 using namespace std;
 
+/**
+ * @class Item
+ * @brief class for item
+ */
 class Item
 {
   public:
     Item() {}
     Item(string item) : item_(item) {}
     virtual ~Item() {}
+
+    /**
+     * @fn getItem()
+     * @brief get the item
+     */
     string getItem() const { return item_; }
 
     virtual bool operator == (string &s) const {
@@ -40,6 +56,7 @@ class Item
     }
 
   private:
+	/**　@brief an item */
     string item_;
 };
 

@@ -1,3 +1,10 @@
+/**
+ * @file FPtree.hpp
+ * @brief implementing FP-tree algorithm
+ * @author sfchaos
+ * @date 2014/12/16
+ */
+
 #ifndef FPTREE_HPP_
 #define FPTREE_HPP_
 
@@ -9,53 +16,49 @@
 
 using namespace std;
 
+
+/**
+ * @class FPtree
+ * @brief class for FP-tree
+ */
+
 class FPtree
 {
 	public:
-	//FPtree() : root_(nullptr) {
 	FPtree() {
-		//root_ = new Node;
 		current_ = root_;
 	}
 
 	~FPtree() {
-		//delete root_;
 	}
 
-	//void addTransaction(const Transaction &tran) {
+    /**
+     * @fn addTransaction(Transaction &tran)
+     * @brief add a transaction to FP-tree
+     * @param[in] tran  a transaction
+     */
 	void addTransaction(Transaction &tran) {
-		//for_each(tran.begin(), tran.end(), [&](ItemCount const *item) {
 		for_each(tran.begin(), tran.end(), [&](shared_ptr<ItemCount> pitem) {
 			current_->incFreq();
-//cout << item->getItem();
-//cout << pitem->getItem();
-			//Node *tmp = current_->findChild(item->getItem());
-			//Node *tmp = current_->findChild(pitem->getItem());
 			shared_ptr<Node> tmp = current_->findChild(pitem->getItem());
 cout << "passing..." << endl;
-			//if (tmp == NULL) {
 			if (tmp == nullptr) {
-				//Node *child = new Node(item->getItem());
-				//Node *child = new Node(pitem->getItem());
-				//shared_ptr<Node> child(new Node(pitem->getItem(), current_));
 				shared_ptr<Node> child(new Node(pitem->getItem()));
 				child->setParent(current_);
 				current_->addChild(child);
 				current_ = child;
-				//delete tmp;
 			} else {
 				current_ = tmp;
 			}
 		});
 		current_ = root_;
-//cout << endl;
 	}
 
 	private:
+		/**　@brief a pointer to root node */
 		shared_ptr<Node> root_;
+		/**　@brief a pointer to current node */
 		shared_ptr<Node> current_;
-		//Node *root_;
-		////Node *current_;
 };
 
 #endif
